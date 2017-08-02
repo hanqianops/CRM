@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            用户列表
+        </div>
+        <div>
+            <div class="king-wrapper">
+                <form class="form-horizontal" method="post">
+                    <br>
+                    {% csrf_token %}
+                    {{ form_obj.non_field_errors }}
+                    {% for field in form_obj %}
+                        <div class="form-group">
+                            <label class=" col-md-1 control-label" style="font-weight: 100">{{ field.label }}: </label>
+                            <div class="col-md-7">
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                            <br/>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn-default btn col-lg-offset-9">保存</button>
+                </form>
+            </div>
+        </div>
+{% endblock %}

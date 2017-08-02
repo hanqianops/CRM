@@ -1,0 +1,60 @@
+{% extends "base2.html" %}
+
+{% block js %}
+    <script>
+        function menu() {
+            $.ajax({
+                url: '/menu/',
+                type: "GET",
+                async: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    config = data
+                }})
+            return config
+        }
+        BUI.use('common/main', function () {
+            /**
+               var config = [
+                {
+                    id: 'menu',
+                    homePage: '1',
+                    menu: [
+                        {
+                            text: '销售',
+                            items: [
+                                {id: '1', text: '顾客信息', href: 'Node/index.html'},
+                                {id: '2', text: '缴费记录', href: 'Role/index.html'},
+                            ]
+                        },
+                    ]
+                },
+                {
+                    id: 'teacher', menu: [
+                    {
+                        text: '教师',
+                        items: [
+                            {id: '9', text: '班级列表', href: 'Node/aaa.html'},
+                            {id: '9', text: '上课记录', href: 'Node/aaa.html'}
+                        ]
+                    }]
+                },
+                {
+                    id: 'student', menu: [
+                    {
+                        text: '学生',
+                        items: [
+                            {id: '9', text: '学习记录', href: 'Node/aaa.html'},
+                            {id: '9', text: '上课记录', href: 'Node/aaa.html'}
+                        ]
+                    }]
+                },
+            ];
+            **/
+
+            new PageUtil.MainPage({
+                modulesConfig: menu()
+            });
+        });
+    </script>
+{% endblock %}

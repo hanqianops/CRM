@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load custom_admin_tags %}
+
+{% block title %}
+    {% title admin_class as title %}
+    {{ title }}
+{% endblock %}
+
+{% block menu %}
+    {% menu site %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row page-header-box">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                {% title admin_class as title %} {{ title }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            列表
+        </div>
+        <div class='panel-body'>
+            <!--过滤-->
+            {% if admin_class.list_filter %}
+
+                <div class="row">
+                    <form class="form-inline" id="iForm">
+                        {% for filter_column,display_name in admin_class.list_filter %}
+                            <div class="col-sm-6 col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"
+                                             style="border-radius:0px">{{ display_name }}</div>
+                                        {% build_filter_ele filter_column admin_class filter_condtions %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+                        <button id="filter" class="hide" style="margin-left:15px">过滤</button>
+                        <div class="col-lg-12 ">
+                            <ul class="nav nav-list">
+                                <li class="divider"></li>
+                            </ul>
+                            <br>
+                            {% if admin_class.search_fields %}
+                                <div class="input-group col-md-3">
+                                    <input type="text" name="search" class="form-control input-sm"
+                                           placeholder="请输入字段名"/>
+                                    <span class="input-group-btn ">
+                           <button class=" btn btn-info input-sm">搜索</button>
+                        </span>
+
+                                </div>
+                                <br> <br>
+
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+            <!--过滤结束-->
+        <!--
+            <a class="btn btn-default btn-sm" role="button" onclick="SelectAll();">全选</a>
+            <a class="btn btn-default btn-sm" role="button" onclick="ReverseAll();">反选</a>
+            <a class="btn btn-default btn-sm" role="button" onclick="CancleAll();">取消</a>
+        -->
+            <a href="add/" class="btn btn-default btn-sm">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                添加</a>
+            <a role="button" class="btn btn-default btn-sm" onclick="CurrentPageEdit();">
+                <i class="fa fa-pencil-square-o" aria-hidden="false"></i>
+                编辑</a>
+            <a role="button" class="btn btn-default btn-sm">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                删除</a>
+
+            <div class="table-responsive overflow">
+
+                <table class="table table-hover table-bordered table-condensed" id="ggg">
+                    <thead>
+                    <tr>
+                        {% build_table_head request.GET admin_class %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in querysets %}  <!--循环每一行数据-->
+                        {% build_table_row row admin_class %}
+                    {% endfor %}
+                    <tfoot>
+
+                    </tfoot>
+                    <tr>
+                        <td colspan="100%">
+                            <div class="pagination-info pull-left">共有{{ page_info.all_count }}条，每页显示
+                                <select onchange='Page()' id="page">
+                                    <option value="2">2</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="100">100</option>
+                                </select> 条
+                                <a id="pageSub" class="hide"></a>
+                            </div>
+                            <div class="pull-right king-page-box">
+                                <ul class="pagination pagination-small pull-right">
+
+                                    <li class="next">{{ page_info.page_str|safe }}</li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            /*定位分页数量*/
+            var page_num = {{ request.session.page_num }};
+            $("#page").val(page_num);
+        })
+        function CurrentPageEdit() {
+            /*编辑模式*/
+            $("table tr").each(function () {
+                s = $(this).children().children().prop('checked')
+                if (s) {
+                    //console.log($(this).next(),'|||')
+
+                    $(this).children().each(function (i, v) {
+                        if (v.getAttribute('edit') == 'true') {
+                            console.log(i,$(v).find("select"),'====')
+                            console.log(i,v)
+                            $(v).find("select").attr("selected", true);
+                            //var text = $(this).text()  //当前的值
+                            //$(this).next().removeClass('hide')
+                            //if ($(this).find("select")) {
+                            //    console.log($(this),$(this).text(),'===this col')
+                            //    $("select option[name='" + $(this).text() + "']").attr("selected", true);
+                            //}
+                            $(v).next().removeClass('hide')
+                            $(this).remove()
+                        }
+                    })
+                }
+            })
+        }
+        function CurrentPageEdit2() {
+            $("td")[5].next
+            $("table tr").each(function () {
+                s = $(this).children().children().prop('checked')
+                if (s) {
+                    console.log($(this).children())
+                    $(this).children().each(function (i, v) {
+                        //console.log(i,v,'===')
+                        if (v.getAttribute('edit') == 'true') {
+                            console.log(i, v, '可编辑的td对象')
+                            console.log($(this).text())
+                            content = $(this).text()
+                            var td = document.createElement("td")
+                            td.innerHTML = "<input type='text' value=" + content + ">"
+                            $(this).replaceWith(td)
+                        }
+                    })
+                }
+            })
+        }
+
+        function Filter() {
+            /*选中后自动过滤*/
+            $("#filter")[0].click()
+        }
+
+        function Page() {
+            /*分页*/
+            var page_val = "?" + "page_num=" + $("#page").val()
+            $("#pageSub").attr("href", "{% url 'crm_admin:obj_list' app_name model_name %}" + page_val)
+            $("#pageSub")[0].click()
+        }
+
+        function SelectAllCancle(ths) {
+            /*表格第一列 全选 取消*/
+            if ($(ths)[0].checked) {
+                $("input[type='checkbox']").prop("checked", true)
+            } else {
+                $("input[type='checkbox']").prop("checked", false)
+            }
+        }
+
+        function SelectAll() {
+            /*全选按钮*/
+            $("input[name='checkbox']").prop("checked", true)
+        }
+        function CancleAll() {
+            /*取消按钮*/
+            $("input[type='checkbox']").prop("checked", false)
+        }
+        function ReverseAll() {
+            /*反选按钮*/
+            $("input[name='checkbox']").each(function () {
+                var s = $(this).prop("checked");
+                if (s) {
+                    $(this).prop("checked", false);
+                } else {
+                    $(this).prop("checked", true);
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

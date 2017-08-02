@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load custom_admin_tags %}
+
+{% block title %}
+    {% title admin_class as title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3> {% title admin_class as title %} {{ title }} </h3>
+
+        <!--过滤-->
+        {% if admin_class.list_filter %}
+            <div class="row">
+                <form class="form-inline">
+                    {% for filter_column,display_name in admin_class.list_filter %}
+                        <div class="form-group col-xs-2" >
+                            <label style="font-weight: normal">{{ display_name }}：</label>
+                            {% build_filter_ele filter_column admin_class filter_condtions %}
+                        </div>
+                    {% endfor %}
+                    <button id="filter" class="hide" style="margin-left:15px">过滤</button>
+                    <div class="input-group col-md-4" style="margin-top: 25px" >
+                        <input type="text" name="search" class="form-control input-sm"  placeholder="请输入字段名"/>
+                        <span class="input-group-btn ">
+                           <button class=" btn btn-info input-sm">搜索</button>
+                        </span>
+                    </div>
+                </form>
+                <br>
+            </div>
+        {% endif %}
+        <!--过滤结束-->
+
+<button class=" btn btn-info input-sm">添加</button>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                {% if not  admin_class.list_display %}
+                    <th>{{ model_name }}</th>
+                {% else %}
+                    {% for _,column in admin_class.list_display %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in querysets %}  <!--循环每一行数据-->
+                {% build_table_row row admin_class %}
+                {# {% build_table_row row admin_class as row_data %}#}
+                {# {% build_table_row row admin_class  %}#}
+                {# {{ row_data|safe }}#}
+            {% endfor %}
+
+            </tbody>
+        </table>
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li>{{ page_info.page_str|safe }}</li>
+            </ul>
+                <p  class="text-right" style="color: #5e5e5e;">共{{ page_info.all_page }}页{{ page_info.all_count }}项，显示第{{ page_info.start  }}到{{ page_info.end }}项</p>
+        </nav>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        function Filter() {
+            $("#filter")[0].click()
+        }
+    </script>
+{% endblock %}

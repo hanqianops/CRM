@@ -1,0 +1,16 @@
+CRM管理系统
+
+使用模板处理器定义全局上下文变量
+自定义 admin 展示各种信息
+可自定义需要的显示字段
+可自定义搜索字段
+多字段排序
+
+自定义高精度的权限框架，
+
+
+CRM管理系统
+完全自定制Django admin功能
+使用模板处理器定义全局上下文变量
+实现list_display/list_search/action/list_edit/list_editable等功能
+可灵活嵌入项目中使用

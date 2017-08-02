@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% for app_label,model_list in site.registered_admins.items %}
+        <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="row page-header-box">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        {{ app_label }}
+                    </h1>
+                </div>
+            </div>
+            <table class="table table-hover">
+                {% for model_name,admin_class in model_list.items %}
+                    <tr>
+                        <td>
+                            {# <a href="/{{ app_label }}/{{ model_name }}/"> {{ model_name }} </a>#}
+                            <a href="{% url 'crm_admin:obj_list' app_label model_name %}"> {{ admin_class.name }} </a>
+                        </td>
+                        <td>add</td>
+                        <td>change</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
+{% block js %}
+{% endblock %}
